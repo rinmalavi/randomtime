@@ -1,0 +1,21 @@
+swarm:
+  consul:
+    url: http://localhost:8500
+  bind:
+    address: 127.0.0.1
+  http:
+    port: 8090
+  logging:
+    pattern-formatters:
+      COLOR_PATTERN:
+        pattern: "%p %d [%c] (%t) [%X{port}] [%X{REQUEST_ID}] [%X{request_id}] %s%e%n"
+    periodic-rotating-file-handlers:
+      FILE:
+        file:
+          path: /opt/logs/randomtime/time.log
+        suffix: .yyyy-MM-dd
+        named-formatter: COLOR_PATTERN
+    root-logger:
+      handlers:
+      - CONSOLE
+      - FILE

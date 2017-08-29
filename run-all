@@ -1,0 +1,13 @@
+gnome-terminal \
+	--working-directory ~/code/randomtime \
+	-e "java -jar -Dswarm.http.port=9100 time/target/time-swarm.jar"
+gnome-terminal \
+	 --working-directory ~/code/randomtime \
+	-e "java -jar -Dswarm.http.port=9110 random/target/random-swarm.jar"
+gnome-terminal \
+	 --working-directory ~/code/randomtime \
+	-e "java -jar -Dswarm.http.port=9090 root/target/root-swarm.jar"
+gnome-terminal \
+	 --working-directory ~/code/randomtime \
+	-e "java -jar -Dswarm.http.port=9089 deadletters/target/deadletters-swarm.jar"
+

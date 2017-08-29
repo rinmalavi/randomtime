@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>de.atron.randomtime</groupId>
+    <artifactId>randomtime</artifactId>
+    <version>0.0.999</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <artifactId>randomtime-test</artifactId>
+
+  <name>RandomTime Test</name>
+  <description>Is time random?</description>
+
+  <packaging>pom</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <executions>
+          <execution>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>wildfly-swarm-plugin</artifactId>
+        <configuration>
+          <properties>
+            <swarm.bind.address>127.0.0.1</swarm.bind.address>
+            <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+          </properties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>package</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>start</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>multistart</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>multistart</goal>
+            </goals>
+            <configuration>
+              <processes>
+                <process>
+                  <artifactId>root</artifactId>
+                  <properties>
+                    <swarm.http.port>9000</swarm.http.port>
+                    <service.random.url>localhost:9996</service.random.url>
+                    <service.time.url>localhost:9998</service.time.url>
+                    <swarm.bind.address>127.0.0.1</swarm.bind.address>
+                    <swarm.logging.periodic-rotating-file-handlers.FILE.file.path>/opt/logs/randomtime/root_9000.log</swarm.logging.periodic-rotating-file-handlers.FILE.file.path>
+                  </properties>
+                </process>
+                <process>
+                  <artifactId>time</artifactId>
+                  <properties>
+                    <swarm.http.port>9998</swarm.http.port>
+                    <swarm.bind.address>127.0.0.1</swarm.bind.address>
+                    <swarm.logging.periodic-rotating-file-handlers.FILE.file.path>/opt/logs/randomtime/time_9998.log</swarm.logging.periodic-rotating-file-handlers.FILE.file.path>
+                  </properties>
+                </process>
+                <process>
+                  <artifactId>random</artifactId>
+                  <properties>
+                    <swarm.http.port>9996</swarm.http.port>
+                    <swarm.bind.address>127.0.0.1</swarm.bind.address>
+                    <swarm.logging.periodic-rotating-file-handlers.FILE.file.path>/opt/logs/randomtime/random_9996.log</swarm.logging.periodic-rotating-file-handlers.FILE.file.path>
+                  </properties>
+                </process>
+              </processes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop</id>
+            <phase>post-integration-test</phase>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>de.atron.randomtime</groupId>
+            <artifactId>root</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>de.atron.randomtime</groupId>
+            <artifactId>time</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>de.atron.randomtime</groupId>
+            <artifactId>random</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+
+
+
+</project>
